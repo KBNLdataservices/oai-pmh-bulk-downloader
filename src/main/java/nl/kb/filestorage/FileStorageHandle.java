@@ -12,18 +12,9 @@ public interface FileStorageHandle {
 
     FileStorageHandle create() throws IOException;
 
-    FileStorageHandle clear() throws IOException;
-
     OutputStream getOutputStream(String filename) throws IOException;
     OutputStream getOutputStream(String path, String filename) throws IOException;
-
     InputStream getFile(String filename) throws FileNotFoundException;
 
-    void deleteFiles() throws IOException;
-
-    void downloadZip(OutputStream output) throws IOException;
-
     void moveTo(FileStorageHandle fileStorageHandle) throws IOException;
-
-    String getFileDir();
 }

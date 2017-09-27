@@ -17,6 +17,7 @@ import nl.kb.manifest.ObjectResource;
 import nl.kb.stream.ByteCountOutputStream;
 import nl.kb.stream.ChecksumOutputStream;
 import nl.kb.xslt.XsltTransformer;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -33,6 +34,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -44,8 +46,9 @@ public class ObjectHarvesterOperations {
 
     private static final SAXParser saxParser;
     private static final String METADATA_XML = "metadata.xml";
-    private static final String MANIFEST_INITIAL_XML = "manifest.initial.xml";
-    private static final String MANIFEST_XML = "manifest.xml";
+    static final String MANIFEST_INITIAL_XML = "manifest.initial.xml";
+    static final String MANIFEST_XML = "procesdata.xml";
+    private static final String MANIFEST_XML_SHA512_CHECKSUM = "procesdata.xml.sha512.checksum";
 
     static {
         try {
@@ -229,6 +232,20 @@ public class ObjectHarvesterOperations {
             fromStorageHandle.moveTo(targetHandle);
         } catch (IOException e) {
             LOG.error("SEVERE: failed to access storage for {} record", goal, e);
+        }
+    }
+
+    boolean generateManifestChecksum(FileStorageHandle handle, Consumer<ErrorReport> onError) {
+        try {
+            final InputStream inputStream = handle.getFile(MANIFEST_XML);
+            final ChecksumOutputStream checksumOutputStream = new ChecksumOutputStream("SHA-512");
+            IOUtils.copy(inputStream, checksumOutputStream);
+            IOUtils.write(checksumOutputStream.getChecksumString(),
+                    handle.getOutputStream(MANIFEST_XML_SHA512_CHECKSUM), Charset.defaultCharset());
+            return true;
+        } catch (IOException | NoSuchAlgorithmException e) {
+            onError.accept(new ErrorReport(e, ErrorStatus.IO_EXCEPTION));
+            return false;
         }
     }
 }

@@ -1,7 +1,6 @@
 package nl.kb.filestorage;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,8 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 class LocalFileStorageHandle implements FileStorageHandle {
     private static final int MAX_ENTRIES = 10_000;
@@ -25,7 +22,7 @@ class LocalFileStorageHandle implements FileStorageHandle {
     };
     private static final String NESTED_PATH_FMT = "%s/%s";
 
-    public String getFileDir() {
+    private String getFileDir() {
         return fileDir;
     }
 
@@ -54,12 +51,6 @@ class LocalFileStorageHandle implements FileStorageHandle {
     }
 
     @Override
-    public FileStorageHandle clear() throws IOException {
-        FileUtils.cleanDirectory(new File(fileDir));
-        return this;
-    }
-
-    @Override
     public OutputStream getOutputStream(String filename) throws IOException {
         return new FileOutputStream(new File(String.format(NESTED_PATH_FMT, fileDir, filename)));
     }
@@ -77,45 +68,11 @@ class LocalFileStorageHandle implements FileStorageHandle {
     }
 
     @Override
-    public void deleteFiles() throws IOException {
-        FileUtils.deleteDirectory(new File(fileDir));
-    }
-
-    @Override
-    public void downloadZip(OutputStream output) throws IOException {
-        final ZipOutputStream zipOutputStream = new ZipOutputStream(output);
-
-        zipFile(zipOutputStream, "metadata.xml");
-        zipFile(zipOutputStream, "manifest.xml");
-
-        final File resourceDir = new File(fileDir + "/resources");
-        if (resourceDir.exists() && resourceDir.isDirectory()) {
-            for (File file : FileUtils.listFiles(resourceDir, null, false)) {
-                zipFile(zipOutputStream, String.format("resources/%s", file.getName()));
-            }
-        }
-
-        zipOutputStream.close();
-    }
-
-    @Override
     public void moveTo(FileStorageHandle other) throws IOException {
-        if (other != null) {
-            FileUtils.deleteDirectory(new File(other.getFileDir()));
-            FileUtils.moveDirectory(new File(this.fileDir), new File(other.getFileDir()));
+        if (other != null && other instanceof LocalFileStorageHandle) {
+            FileUtils.moveDirectory(new File(this.fileDir), new File(
+                    ((LocalFileStorageHandle)other).getFileDir()));
         }
     }
 
-    private void zipFile(ZipOutputStream zipOutputStream, String name) throws IOException {
-
-        try {
-            final InputStream is = getFile(name);
-            final ZipEntry metadataEntry = new ZipEntry(name);
-            zipOutputStream.putNextEntry(metadataEntry);
-            IOUtils.copy(is, zipOutputStream);
-            is.close();
-        } catch (FileNotFoundException e) {
-            return;
-        }
-    }
 }

@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>nl.kb</groupId>
-    <artifactId>dare-ir</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>oai-pmh-bulk-downloader</artifactId>
+    <version>1.1-SNAPSHOT</version>
 
     <prerequisites>
         <maven>3.0</maven>

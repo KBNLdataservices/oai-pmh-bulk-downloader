@@ -15,7 +15,7 @@ class Header extends React.Component {
             <div className="navbar navbar-default">
                 <div className="container container-fluid">
                     <div className="navbar-brand">
-                        <Link to="/">Dare 2</Link>
+                        <Link to="/">OAI/PMH Bulk Downloader</Link>
                     </div>
                     <div className="navbar-right navbar-text">
                         <span style={{transform: "rotate(90deg)", color: socketClosed ? "red" : "green"}}

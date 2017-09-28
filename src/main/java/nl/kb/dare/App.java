@@ -11,7 +11,6 @@ import io.dropwizard.setup.Environment;
 import nl.kb.dare.config.FileStorageFactory;
 import nl.kb.dare.config.FileStorageGoal;
 import nl.kb.dare.databasetasks.LoadDatabaseSchemaTask;
-import nl.kb.dare.endpoints.AuthenticationEndpoint;
 import nl.kb.dare.endpoints.HarvesterEndpoint;
 import nl.kb.dare.endpoints.ObjectHarvesterEndpoint;
 import nl.kb.dare.endpoints.RecordEndpoint;
@@ -19,7 +18,6 @@ import nl.kb.dare.endpoints.RecordStatusEndpoint;
 import nl.kb.dare.endpoints.RepositoriesEndpoint;
 import nl.kb.dare.endpoints.RootEndpoint;
 import nl.kb.dare.endpoints.StatusWebsocketServlet;
-import nl.kb.dare.endpoints.kbaut.KbAuthFilter;
 import nl.kb.dare.identifierharvester.IdentifierHarvestErrorFlowHandler;
 import nl.kb.dare.identifierharvester.IdentifierHarvester;
 import nl.kb.dare.idgen.IdGenerator;
@@ -214,32 +212,27 @@ public class App extends Application<Config> {
             LOG.warn("Failed to fix data on boot, probably caused by missing schema", e);
         }
 
-        final KbAuthFilter filter = new KbAuthFilter(config.getAuthEnabled());
-
         // Register endpoints
 
-        // Authentication services
-        register(environment, new AuthenticationEndpoint(filter, config.getKbAutLocation(), config.getHostName()));
-
         // CRUD operations for repositories (harvest definitions)
-        register(environment, new RepositoriesEndpoint(filter, repositoryDao, repositoryValidator, repositoryController));
+        register(environment, new RepositoriesEndpoint(repositoryDao, repositoryValidator, repositoryController));
 
         // Read operations for records (find, view, download)
-        register(environment, new RecordEndpoint(filter, recordDao, errorReportDao, recordReporter,
+        register(environment, new RecordEndpoint(recordDao, errorReportDao, recordReporter,
                 socketNotifier));
 
         // Operational controls for repository harvesters
-        register(environment, new HarvesterEndpoint(filter, repositoryDao, identifierHarvesterDaemon));
+        register(environment, new HarvesterEndpoint(repositoryDao, identifierHarvesterDaemon));
 
         // Operational controls for record fetcher
-        register(environment, new ObjectHarvesterEndpoint(filter, objectHarvesterDaemon));
+        register(environment, new ObjectHarvesterEndpoint(objectHarvesterDaemon));
 
         // Record status endpoint
-        register(environment, new RecordStatusEndpoint(filter, recordReporter, errorReporter, excelReportDao,
+        register(environment, new RecordStatusEndpoint(recordReporter, errorReporter, excelReportDao,
             new ExcelReportBuilder()));
 
         // HTML + javascript app
-        register(environment, new RootEndpoint(config.getKbAutLocation(), config.getHostName()));
+        register(environment, new RootEndpoint(config.getHostName()));
 
         // Make JsonProcessingException show details
         register(environment, new JsonProcessingExceptionMapper(true));

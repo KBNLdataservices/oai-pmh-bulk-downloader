@@ -1,6 +1,5 @@
 package nl.kb.dare.endpoints;
 
-import nl.kb.dare.endpoints.kbaut.KbAuthFilter;
 import nl.kb.dare.model.preproces.Record;
 import nl.kb.dare.model.preproces.RecordDao;
 import nl.kb.dare.model.preproces.RecordReporter;
@@ -10,7 +9,6 @@ import nl.kb.dare.model.statuscodes.ProcessStatus;
 import nl.kb.dare.websocket.SocketNotifier;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -22,15 +20,13 @@ import java.util.HashMap;
 
 @Path("/records")
 public class RecordEndpoint {
-    private final KbAuthFilter filter;
     private final RecordDao recordDao;
     private final ErrorReportDao errorReportDao;
     private final RecordReporter recordReporter;
     private final SocketNotifier socketNotifier;
 
-    public RecordEndpoint(KbAuthFilter filter, RecordDao recordDao, ErrorReportDao errorReportDao,
+    public RecordEndpoint(RecordDao recordDao, ErrorReportDao errorReportDao,
                           RecordReporter recordReporter, SocketNotifier socketNotifier) {
-        this.filter = filter;
         this.recordDao = recordDao;
         this.errorReportDao = errorReportDao;
         this.recordReporter = recordReporter;
@@ -40,10 +36,8 @@ public class RecordEndpoint {
     @GET
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response find(@QueryParam("q") String query, @HeaderParam("Authorization") String auth) {
-        return filter.getFilterResponse(auth)
-                .orElseGet(() -> Response.ok(recordDao.query("%" + query + "%"))
-                .build());
+    public Response find(@QueryParam("q") String query) {
+        return Response.ok(recordDao.query("%" + query + "%")).build();
     }
 
 
@@ -51,55 +45,48 @@ public class RecordEndpoint {
     @PUT
     @Path("/bulk-reset/{repositoryId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response bulkReset(@PathParam("repositoryId") Integer repositoryId,
-                              @HeaderParam("Authorization") String auth) {
-        return filter.getFilterResponse(auth)
-                .orElseGet(() -> {
-                    errorReportDao.bulkDeleteForRepository(ProcessStatus.FAILED.getCode(), repositoryId);
-                    recordDao.bulkUpdateState(ProcessStatus.FAILED.getCode(), ProcessStatus.PENDING.getCode(),
-                            repositoryId);
+    public Response bulkReset(@PathParam("repositoryId") Integer repositoryId) {
 
-                    socketNotifier.notifyUpdate(recordReporter.getStatusUpdate());
+        errorReportDao.bulkDeleteForRepository(ProcessStatus.FAILED.getCode(), repositoryId);
+        recordDao.bulkUpdateState(ProcessStatus.FAILED.getCode(), ProcessStatus.PENDING.getCode(),
+                repositoryId);
 
-                    return Response.ok("{}").build();
-                });
+        socketNotifier.notifyUpdate(recordReporter.getStatusUpdate());
+
+        return Response.ok("{}").build();
     }
 
     @PUT
     @Path("/reset/{ipName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response reset(@PathParam("ipName") String ipName, @HeaderParam("Authorization") String auth) {
-        return filter.getFilterResponse(auth).orElseGet(() -> {
-            final Record record = recordDao.findByIpName(ipName);
-            if (record == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            record.setState(ProcessStatus.PENDING);
-            recordDao.updateState(record);
-            errorReportDao.deleteForRecordId(record.getId());
-            socketNotifier.notifyUpdate(recordReporter.getStatusUpdate());
+    public Response reset(@PathParam("ipName") String ipName) {
+        final Record record = recordDao.findByIpName(ipName);
+        if (record == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        record.setState(ProcessStatus.PENDING);
+        recordDao.updateState(record);
+        errorReportDao.deleteForRecordId(record.getId());
+        socketNotifier.notifyUpdate(recordReporter.getStatusUpdate());
 
-            return Response.ok("{}").build();
-        });
+        return Response.ok("{}").build();
     }
 
     @GET
     @Path("/status/{ipName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response status(@PathParam("ipName") String ipName, @HeaderParam("Authorization") String auth) {
+    public Response status(@PathParam("ipName") String ipName) {
 
-        return filter.getFilterResponse(auth).orElseGet(() -> {
-            final Record record = recordDao.findByIpName(ipName);
+        final Record record = recordDao.findByIpName(ipName);
 
-            if (record == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
+        if (record == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
-            final StoredErrorReport errorReport = errorReportDao.fetchForRecordId(record.getId());
-            final HashMap<String, Object> result = new HashMap<>();
-            result.put("record", record);
-            result.put("errorReport", errorReport);
-            return Response.ok(result).build();
-        });
+        final StoredErrorReport errorReport = errorReportDao.fetchForRecordId(record.getId());
+        final HashMap<String, Object> result = new HashMap<>();
+        result.put("record", record);
+        result.put("errorReport", errorReport);
+        return Response.ok(result).build();
     }
 }

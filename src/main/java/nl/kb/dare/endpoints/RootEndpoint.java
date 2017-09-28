@@ -37,10 +37,8 @@ public class RootEndpoint {
     }
 
     private final String hostName;
-    private final String kbAutLocation;
 
-    public RootEndpoint(String kbAutLocation, String hostName) {
-        this.kbAutLocation = kbAutLocation;
+    public RootEndpoint(String hostName) {
         this.hostName = hostName;
     }
 
@@ -76,7 +74,7 @@ public class RootEndpoint {
     }
 
     private String parseHtmlTemplate(String... pathParams) {
-        final JsEnv env = new JsEnv(pathParams, hostName, kbAutLocation);
+        final JsEnv env = new JsEnv(pathParams, hostName);
 
         try {
             final String jsEnv = new ObjectMapper().writeValueAsString(env);
@@ -95,14 +93,11 @@ public class RootEndpoint {
         private final String[] pathParams;
         @JsonProperty
         private final String hostName;
-        @JsonProperty
-        private final String kbAutLocation;
 
-        JsEnv(String[] pathParams, String hostName, String kbAutLocation) {
+        JsEnv(String[] pathParams, String hostName) {
 
             this.pathParams = pathParams;
             this.hostName = hostName;
-            this.kbAutLocation = kbAutLocation;
         }
     }
 }

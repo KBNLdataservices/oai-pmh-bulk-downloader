@@ -30,8 +30,7 @@ class Config extends Configuration {
 
     @JsonProperty
     private Boolean authEnabled;
-    @JsonProperty
-    private String kbAutLocation;
+
 
     @JsonProperty
     private Integer maxConsecutiveDownloadFailures = 10;
@@ -88,10 +87,6 @@ class Config extends Configuration {
 
     public boolean getAuthEnabled() {
         return authEnabled;
-    }
-
-    public String getKbAutLocation() {
-        return kbAutLocation;
     }
 
     public Integer getMaxConsecutiveDownloadFailures() {

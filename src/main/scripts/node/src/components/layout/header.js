@@ -21,9 +21,6 @@ class Header extends React.Component {
                         <span style={{transform: "rotate(90deg)", color: socketClosed ? "red" : "green"}}
                               className="glyphicon glyphicon-transfer" />
                     </div>
-                    <div className="navbar-right navbar-text" style={{marginRight: "1em"}}>
-                        Ingelogd als {this.props.username}
-                    </div>
                 </div>
             </div>
         );

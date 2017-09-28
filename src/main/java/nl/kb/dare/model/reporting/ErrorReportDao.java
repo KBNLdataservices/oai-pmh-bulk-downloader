@@ -15,9 +15,7 @@ public interface ErrorReportDao {
     )
     void insert(@Bind("recordId") Long recordId, @BindBean("report") ErrorReport errorReport);
 
-    @SqlQuery(
-        "select * from ERROR_REPORTS where DARE_PREPROCES_ID = :recordId"
-    )
+    @SqlQuery("SELECT * FROM ERROR_REPORTS WHERE DARE_PREPROCES_ID = :recordId")
     StoredErrorReport fetchForRecordId(@Bind("recordId") Long recordId);
 
     @SqlUpdate("delete from error_reports where dare_preproces_id in (" +

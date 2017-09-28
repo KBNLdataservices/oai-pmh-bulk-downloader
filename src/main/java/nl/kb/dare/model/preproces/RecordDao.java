@@ -14,23 +14,17 @@ import java.util.List;
 @RegisterMapper(RecordMapper.class)
 public interface RecordDao {
 
-    @SqlBatch("INSERT INTO DARE_PREPROCES (ID, STATE, IP_NAME, TS_CREATE, REPOSITORY_ID, OAI_ID, OAI_DATESTAMP, LOOKUP) " +
-            "VALUES (SEQ_DARE_PREPROCES.nextval, :state, :ipName, CURRENT_TIMESTAMP, :repositoryId, :oaiIdentifier, :oaiDateStamp, :ipName || :oaiIdentifier)")
+    @SqlBatch("INSERT INTO DARE_PREPROCES (STATE, IP_NAME, TS_CREATE, REPOSITORY_ID, OAI_ID, OAI_DATESTAMP, LOOKUP) " +
+            "VALUES (:state, :ipName, CURRENT_TIMESTAMP, :repositoryId, :oaiIdentifier, :oaiDateStamp, CONCAT(:ipName, :oaiIdentifier))")
     void insertBatch(@BindBean List<Record> recordList);
 
-    @SqlQuery("select case " +
-            "            when exists (select 1 " +
-            "                         from dare_preproces " +
-            "                         where oai_id = :identifier and oai_datestamp = :dateStamp) " +
-            "            then 1 " +
-            "            else 0 " +
-            "        end " +
-            "from dual")
+
+    @SqlQuery("select exists(select * from DARE_PREPROCES where oai_id = :identifier and oai_datestamp = :dateStamp)")
     Boolean existsByDatestampAndIdentifier(@BindBean OaiRecordHeader oaiRecordHeader);
 
 
 
-    @SqlQuery("select * from DARE_PREPROCES where STATE = :process_status_code AND REPOSITORY_ID = :repository_id AND ROWNUM <= :limit")
+    @SqlQuery("select * from DARE_PREPROCES where STATE = :process_status_code AND REPOSITORY_ID = :repository_id LIMIT :limit")
     List<Record> fetchNextWithProcessStatusByRepositoryId(
             @Bind("process_status_code") Integer processStatusCode,
             @Bind("limit") Integer limit,
@@ -57,8 +51,8 @@ public interface RecordDao {
     @SqlQuery("select * from DARE_PREPROCES where IP_NAME = :ipName")
     Record findByIpName(@Bind("ipName") String ipName);
 
-    @SqlQuery("select * from (select dare_preproces.*, row_number() over (order by state desc) as seqnum " +
-            "      from dare_preproces where dare_preproces.lookup like :query) where seqnum <= 10")
+
+    @SqlQuery("SELECT * FROM dare_preproces WHERE dare_preproces.lookup LIKE :query ORDER BY state DESC LIMIT 10")
     List<Record> query(@Bind("query") String query);
 
 }

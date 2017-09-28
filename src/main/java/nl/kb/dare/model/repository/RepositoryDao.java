@@ -11,8 +11,8 @@ import java.util.List;
 @RegisterMapper(RepositoryMapper.class)
 public interface RepositoryDao {
 
-    @SqlUpdate("insert into repositories (id, name, url, metadataPrefix, oai_set, datestamp, schedule) " +
-            "values (repositories_seq.nextval, :name, :url, :metadataPrefix, :set, :dateStamp, :scheduleCode)")
+    @SqlUpdate("insert into repositories (name, url, metadataPrefix, oai_set, datestamp, schedule) " +
+            "values (:name, :url, :metadataPrefix, :set, :dateStamp, :scheduleCode)")
     void insert(@BindBean Repository repositoryConfig);
 
     @SqlQuery("select * from repositories where id = :id")

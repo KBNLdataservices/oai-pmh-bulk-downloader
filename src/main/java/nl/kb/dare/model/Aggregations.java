@@ -3,7 +3,6 @@ package nl.kb.dare.model;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntFunction;
@@ -24,7 +23,7 @@ public class Aggregations {
             final String codeKey = getCodeKey.apply(statusCode);
             if (statusMap.containsKey(codeKey)) {
                 statusMap.put(codeKey, getRowInt(row, "count") +
-                        ((BigDecimal) statusMap.get(codeKey)).intValue());
+                        (Integer) statusMap.get(codeKey));
             } else {
                 statusMap.put(codeKey, row.get("count"));
             }
@@ -37,6 +36,6 @@ public class Aggregations {
     }
 
     private static Integer getRowInt(Map<String, Object> row, String repositoryId) {
-        return ((BigDecimal) row.get(repositoryId)).intValue();
+        return (Integer) row.get(repositoryId);
     }
 }

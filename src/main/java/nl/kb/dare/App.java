@@ -10,8 +10,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import nl.kb.dare.config.FileStorageFactory;
 import nl.kb.dare.config.FileStorageGoal;
-import nl.kb.dare.databasetasks.LoadOracleSchemaTask;
-import nl.kb.dare.databasetasks.LoadRepositoriesTask;
+import nl.kb.dare.databasetasks.LoadDatabaseSchemaTask;
 import nl.kb.dare.endpoints.AuthenticationEndpoint;
 import nl.kb.dare.endpoints.HarvesterEndpoint;
 import nl.kb.dare.endpoints.ObjectHarvesterEndpoint;
@@ -263,8 +262,7 @@ public class App extends Application<Config> {
 
 
         // Database task endpoints
-        environment.admin().addTask(new LoadOracleSchemaTask(db));
-        environment.admin().addTask(new LoadRepositoriesTask(repositoryDao));
+        environment.admin().addTask(new LoadDatabaseSchemaTask(db));
     }
 
 

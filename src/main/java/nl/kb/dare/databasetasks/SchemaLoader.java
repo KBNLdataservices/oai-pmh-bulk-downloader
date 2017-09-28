@@ -26,5 +26,8 @@ public class SchemaLoader {
                 sb.append(line).append("\n");
             }
         }
+
+        final String sql = sb.toString();
+        h.update(sql);
     }
 }

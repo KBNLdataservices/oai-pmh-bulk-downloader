@@ -7,11 +7,11 @@ import org.skife.jdbi.v2.Handle;
 
 import java.io.PrintWriter;
 
-public class LoadOracleSchemaTask extends Task {
+public class LoadDatabaseSchemaTask extends Task {
     private final DBI db;
 
-    public LoadOracleSchemaTask(DBI db) {
-        super("create-oracle-schema");
+    public LoadDatabaseSchemaTask(DBI db) {
+        super("create-database-schema");
         this.db = db;
     }
 

@@ -18,14 +18,14 @@ public interface ErrorReportDao {
     @SqlQuery("SELECT * FROM ERROR_REPORTS WHERE DARE_PREPROCES_ID = :recordId")
     StoredErrorReport fetchForRecordId(@Bind("recordId") Long recordId);
 
-    @SqlUpdate("delete from error_reports where dare_preproces_id in (" +
+    @SqlUpdate("delete from ERROR_REPORTS where dare_preproces_id in (" +
             "  select id" +
-            "  from dare_preproces" +
+            "  from DARE_PREPROCES" +
             "  where repository_id = :repositoryId" +
             "  and state = :state" +
             ")")
     void bulkDeleteForRepository(@Bind("state") Integer processStatusCode, @Bind("repositoryId") Integer repositoryId);
 
-    @SqlUpdate("delete from error_reports where dare_preproces_id = :recordId")
+    @SqlUpdate("delete from ERROR_REPORTS where dare_preproces_id = :recordId")
     void deleteForRecordId(@Bind("recordId") Long recordId);
 }

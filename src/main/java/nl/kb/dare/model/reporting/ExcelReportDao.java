@@ -10,7 +10,7 @@ import java.util.Iterator;
 public interface ExcelReportDao {
 
     @SqlQuery("select STATUS_CODE, TS_CREATE, MESSAGE, URL, OAI_ID, TS_PROCESSED, STATE, IP_NAME, OAI_DATESTAMP " +
-            "from error_reports left join dare_preproces on error_reports.dare_preproces_id = dare_preproces.id " +
+            "from ERROR_REPORTS left join DARE_PREPROCES on ERROR_REPORTS.DARE_PREPROCES_id = DARE_PREPROCES.id " +
             "where repository_id = :repositoryId")
     Iterator<ExcelReportRow> getExcelForRepository(@Bind("repositoryId") Integer repositoryId);
 }

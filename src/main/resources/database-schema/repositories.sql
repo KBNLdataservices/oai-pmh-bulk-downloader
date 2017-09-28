@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS repositories;
+
 CREATE TABLE repositories (
   id int(11) NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) DEFAULT NULL,
@@ -7,7 +9,7 @@ CREATE TABLE repositories (
   datestamp varchar(50) DEFAULT NULL,
   schedule int(11) NOT NULL,
   enabled int(3) DEFAULT 0 NOT NULL,
-  lastHarvest TIMESTAMP(6) DEFAULT NULL,
+  lastHarvest DATETIME DEFAULT NULL,
   PRIMARY KEY (id)
 );
 

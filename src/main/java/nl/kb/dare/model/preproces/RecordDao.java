@@ -52,7 +52,7 @@ public interface RecordDao {
     Record findByIpName(@Bind("ipName") String ipName);
 
 
-    @SqlQuery("SELECT * FROM dare_preproces WHERE dare_preproces.lookup LIKE :query ORDER BY state DESC LIMIT 10")
+    @SqlQuery("SELECT * FROM DARE_PREPROCES WHERE DARE_PREPROCES.lookup LIKE :query ORDER BY state DESC LIMIT 10")
     List<Record> query(@Bind("query") String query);
 
 }

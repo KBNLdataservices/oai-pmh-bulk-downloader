@@ -10,22 +10,22 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 public interface ErrorReportDao {
 
     @SqlUpdate(
-        "INSERT INTO ERROR_REPORTS (DARE_PREPROCES_ID, MESSAGE, URL, STACKTRACE, STATUS_CODE) " +
+        "INSERT INTO error_reports (record_status_id, MESSAGE, URL, STACKTRACE, STATUS_CODE) " +
         "VALUES (:recordId, :report.errorMessage, :report.url, :report.filteredStackTrace, :report.statusCode)"
     )
     void insert(@Bind("recordId") Long recordId, @BindBean("report") ErrorReport errorReport);
 
-    @SqlQuery("SELECT * FROM ERROR_REPORTS WHERE DARE_PREPROCES_ID = :recordId")
+    @SqlQuery("SELECT * FROM error_reports WHERE record_status_id = :recordId")
     StoredErrorReport fetchForRecordId(@Bind("recordId") Long recordId);
 
-    @SqlUpdate("delete from ERROR_REPORTS where dare_preproces_id in (" +
+    @SqlUpdate("delete from error_reports where record_status_id in (" +
             "  select id" +
-            "  from DARE_PREPROCES" +
+            "  from record_status" +
             "  where repository_id = :repositoryId" +
             "  and state = :state" +
             ")")
     void bulkDeleteForRepository(@Bind("state") Integer processStatusCode, @Bind("repositoryId") Integer repositoryId);
 
-    @SqlUpdate("delete from ERROR_REPORTS where dare_preproces_id = :recordId")
+    @SqlUpdate("delete from error_reports where record_status_id = :recordId")
     void deleteForRecordId(@Bind("recordId") Long recordId);
 }

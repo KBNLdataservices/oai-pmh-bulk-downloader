@@ -9,9 +9,9 @@ import static nl.kb.dare.model.Aggregations.getAggregateCounts;
 public class RecordReporter {
 
     private static final String SQL = "select count(*) as count," +
-            "DARE_PREPROCES.state as status_code, " +
-            "DARE_PREPROCES.repository_id as repository_id " +
-            "from DARE_PREPROCES " +
+            "record_status.state as status_code, " +
+            "record_status.repository_id as repository_id " +
+            "from record_status " +
             "group by repository_id, state";
 
     private final DBI db;

@@ -32,7 +32,7 @@ public class RecordReporterTest {
         dataSource = JdbcConnectionPool.create("jdbc:h2:mem:testx", "username", "password");
         dbi = new DBI(dataSource);
         handle = dbi.open();
-        SchemaLoader.runSQL("/database/dare_preproces.sql", handle);
+        SchemaLoader.runSQL("/database/record_status.sql", handle);
         final RecordDao recordDao = dbi.onDemand(RecordDao.class);
 
         final Record one = RecordUtil.makeRecord(

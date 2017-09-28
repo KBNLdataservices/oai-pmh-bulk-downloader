@@ -44,7 +44,7 @@ public class ErrorReportDaoTest {
         final DBI dbi = new DBI(dataSource);
         handle = dbi.open();
         SchemaLoader.runSQL("/database/error_reports.sql", handle);
-        SchemaLoader.runSQL("/database/dare_preproces.sql", handle);
+        SchemaLoader.runSQL("/database/record_status.sql", handle);
         instance = dbi.onDemand(ErrorReportDao.class);
         recordDao = dbi.onDemand(RecordDao.class);
 

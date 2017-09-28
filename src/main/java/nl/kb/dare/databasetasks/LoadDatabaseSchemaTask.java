@@ -20,7 +20,7 @@ public class LoadDatabaseSchemaTask extends Task {
         final Handle h = db.open();
 
         SchemaLoader.runSQL("/database-schema/repositories.sql", h);
-        SchemaLoader.runSQL("/database-schema/dare_preproces.sql", h);
+        SchemaLoader.runSQL("/database-schema/record_status.sql", h);
         SchemaLoader.runSQL("/database-schema/error_reports.sql", h);
 
         h.close();

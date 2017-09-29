@@ -1,9 +1,9 @@
 package nl.kb.core.model.reporting;
 
 import nl.kb.core.databasetasks.SchemaLoader;
-import nl.kb.core.model.preproces.Record;
-import nl.kb.core.model.preproces.RecordDao;
-import nl.kb.core.model.preproces.RecordUtil;
+import nl.kb.core.model.record.Record;
+import nl.kb.core.model.record.RecordDao;
+import nl.kb.core.model.record.RecordUtil;
 import nl.kb.core.model.statuscodes.ErrorStatus;
 import nl.kb.core.model.statuscodes.ProcessStatus;
 import nl.kb.core.websocket.socketupdate.ErrorStatusUpdate;

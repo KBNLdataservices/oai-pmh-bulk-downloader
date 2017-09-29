@@ -1,4 +1,4 @@
-package nl.kb.core.model.preproces;
+package nl.kb.core.model.record;
 
 import nl.kb.core.idgen.IdGenerator;
 import nl.kb.core.model.repository.Repository;

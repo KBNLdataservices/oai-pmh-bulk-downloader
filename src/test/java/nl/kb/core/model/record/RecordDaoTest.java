@@ -1,4 +1,4 @@
-package nl.kb.core.model.preproces;
+package nl.kb.core.model.record;
 
 import nl.kb.core.databasetasks.SchemaLoader;
 import nl.kb.core.model.statuscodes.ProcessStatus;

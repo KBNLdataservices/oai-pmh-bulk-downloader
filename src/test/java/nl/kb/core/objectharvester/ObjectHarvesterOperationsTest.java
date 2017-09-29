@@ -2,7 +2,7 @@ package nl.kb.core.objectharvester;
 
 import com.google.common.collect.Lists;
 import nl.kb.core.config.FileStorageGoal;
-import nl.kb.core.model.preproces.Record;
+import nl.kb.core.model.record.Record;
 import nl.kb.core.model.reporting.ErrorReport;
 import nl.kb.core.model.repository.Repository;
 import nl.kb.core.model.statuscodes.ErrorStatus;

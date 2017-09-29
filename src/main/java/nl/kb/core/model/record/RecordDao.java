@@ -1,4 +1,4 @@
-package nl.kb.core.model.preproces;
+package nl.kb.core.model.record;
 
 import nl.kb.oaipmh.OaiRecordHeader;
 import org.skife.jdbi.v2.sqlobject.Bind;

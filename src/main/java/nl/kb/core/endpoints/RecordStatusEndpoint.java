@@ -1,6 +1,6 @@
 package nl.kb.core.endpoints;
 
-import nl.kb.core.model.preproces.RecordReporter;
+import nl.kb.core.model.record.RecordReporter;
 import nl.kb.core.model.reporting.ErrorReporter;
 import nl.kb.core.model.reporting.ExcelReportBuilder;
 import nl.kb.core.model.reporting.ExcelReportDao;

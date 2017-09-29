@@ -2,7 +2,7 @@ package nl.kb.core.identifierharvester;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.kb.core.model.RunState;
-import nl.kb.core.model.preproces.RecordBatchLoader;
+import nl.kb.core.model.record.RecordBatchLoader;
 import nl.kb.core.model.repository.Repository;
 import nl.kb.core.model.repository.RepositoryController;
 import nl.kb.core.model.repository.RepositoryDao;

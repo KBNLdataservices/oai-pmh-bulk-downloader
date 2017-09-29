@@ -1,4 +1,4 @@
-package nl.kb.core.model.preproces;
+package nl.kb.core.model.record;
 
 import nl.kb.oaipmh.OaiRecordHeader;
 import nl.kb.oaipmh.OaiStatus;

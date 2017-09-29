@@ -1,8 +1,8 @@
 package nl.kb.core.endpoints;
 
-import nl.kb.core.model.preproces.Record;
-import nl.kb.core.model.preproces.RecordDao;
-import nl.kb.core.model.preproces.RecordReporter;
+import nl.kb.core.model.record.Record;
+import nl.kb.core.model.record.RecordDao;
+import nl.kb.core.model.record.RecordReporter;
 import nl.kb.core.model.reporting.ErrorReportDao;
 import nl.kb.core.model.reporting.StoredErrorReport;
 import nl.kb.core.model.statuscodes.ProcessStatus;

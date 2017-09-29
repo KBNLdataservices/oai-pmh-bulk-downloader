@@ -5,8 +5,7 @@ CREATE TABLE stylesheets (
   name VARCHAR(255) NOT NULL,
   xslt text NOT NULL,
   created DATETIME DEFAULT CURRENT_TIMESTAMP(),
-  version_of int(11) DEFAULT NULL,
-  active int(3) DEFAULT 1,
+  is_latest int(3) DEFAULT 1,
   PRIMARY KEY (id)
 );
 

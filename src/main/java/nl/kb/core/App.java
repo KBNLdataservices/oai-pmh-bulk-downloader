@@ -4,6 +4,7 @@ import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
@@ -18,6 +19,7 @@ import nl.kb.core.endpoints.RecordStatusEndpoint;
 import nl.kb.core.endpoints.RepositoriesEndpoint;
 import nl.kb.core.endpoints.RootEndpoint;
 import nl.kb.core.endpoints.StatusWebsocketServlet;
+import nl.kb.core.endpoints.StylesheetEndpoint;
 import nl.kb.core.identifierharvester.IdentifierHarvestErrorFlowHandler;
 import nl.kb.core.identifierharvester.IdentifierHarvester;
 import nl.kb.core.idgen.IdGenerator;
@@ -35,6 +37,7 @@ import nl.kb.core.model.repository.RepositoryController;
 import nl.kb.core.model.repository.RepositoryDao;
 import nl.kb.core.model.repository.RepositoryValidator;
 import nl.kb.core.model.statuscodes.ProcessStatus;
+import nl.kb.core.model.stylesheet.StylesheetDao;
 import nl.kb.core.objectharvester.ObjectHarvestErrorFlowHandler;
 import nl.kb.core.objectharvester.ObjectHarvester;
 import nl.kb.core.objectharvester.ObjectHarvesterOperations;
@@ -68,7 +71,7 @@ public class App extends Application<Config> {
     public void initialize(Bootstrap<Config> bootstrap) {
         // Serve static files
         bootstrap.addBundle(new AssetsBundle("/assets", "/assets"));
-
+        bootstrap.addBundle(new MultiPartBundle());
         // Support ENV variables in configuration yaml files.
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
@@ -87,7 +90,6 @@ public class App extends Application<Config> {
         // Fault tolerant HTTP GET clients
         final HttpFetcher httpFetcherForIdentifierHarvest = new LenientHttpFetcher(true);
         final HttpFetcher httpFetcherForObjectHarvest = new LenientHttpFetcher(false);
-        final HttpFetcher httpFetcherForNumberGenerator = new LenientHttpFetcher(false);
 
         // Handler factory for responses from httpFetcher
         final ResponseHandlerFactory responseHandlerFactory = new ResponseHandlerFactory();
@@ -98,6 +100,7 @@ public class App extends Application<Config> {
         final RecordDao recordDao = db.onDemand(RecordDao.class);
         final ErrorReportDao errorReportDao = db.onDemand(ErrorReportDao.class);
         final ExcelReportDao excelReportDao = db.onDemand(ExcelReportDao.class);
+        final StylesheetDao stylesheetDao = db.onDemand(StylesheetDao.class);
 
         // File storage access
         final Map<FileStorageGoal, FileStorageFactory> fileStorageFactories = config.getFileStorageFactory();
@@ -230,6 +233,9 @@ public class App extends Application<Config> {
         // Record status endpoint
         register(environment, new RecordStatusEndpoint(recordReporter, errorReporter, excelReportDao,
             new ExcelReportBuilder()));
+
+        // Stylesheet management
+        register(environment, new StylesheetEndpoint(stylesheetDao));
 
         // HTML + javascript app
         register(environment, new RootEndpoint(config.getHostName()));

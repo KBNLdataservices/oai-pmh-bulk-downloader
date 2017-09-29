@@ -38,6 +38,7 @@ import nl.kb.core.model.repository.RepositoryDao;
 import nl.kb.core.model.repository.RepositoryValidator;
 import nl.kb.core.model.statuscodes.ProcessStatus;
 import nl.kb.core.model.stylesheet.StylesheetDao;
+import nl.kb.core.model.stylesheet.StylesheetManager;
 import nl.kb.core.objectharvester.ObjectHarvestErrorFlowHandler;
 import nl.kb.core.objectharvester.ObjectHarvester;
 import nl.kb.core.objectharvester.ObjectHarvesterOperations;
@@ -235,7 +236,7 @@ public class App extends Application<Config> {
             new ExcelReportBuilder()));
 
         // Stylesheet management
-        register(environment, new StylesheetEndpoint(stylesheetDao));
+        register(environment, new StylesheetEndpoint(new StylesheetManager(stylesheetDao)));
 
         // HTML + javascript app
         register(environment, new RootEndpoint(config.getHostName()));

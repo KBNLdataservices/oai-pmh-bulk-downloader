@@ -1,0 +1,66 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 18080
+      bindHost: localhost
+  adminConnectors:
+    - type: http
+      port: 18081
+  requestLog:
+    appenders:
+      - type: console
+
+logging:
+  appenders:
+    - type: console
+  level: INFO
+  loggers:
+    "nl.kb.core.identifierharvester.IdentifierHarvester": DEBUG
+    "nl.kb.core.objectharvester": DEBUG
+
+
+
+
+# Database settings.
+database:
+  # the name of your JDBC driver
+  driverClass: com.mysql.jdbc.Driver
+
+  # the username
+  user: daredev
+
+  # the password
+  password: daredev
+
+  # the JDBC URL 127.0.0.1:3306
+  url: jdbc:mysql://127.0.0.1:3306/oaibulkdownload?verifyServerCertificate=false&useSSL=false
+
+hostName: localhost:18080
+
+mailer:
+  type: smtp
+  host: smtp.kb.nl
+  from: noreply@kb.nl
+  to: rene.vanderark@kb.nl
+  port: 25
+
+
+fileStorage:
+  processing:
+    storageType: local
+    storageDir: ../oai-bulk-files/processing
+  done:
+    storageType: local
+    storageDir: ../oai-bulk-files/in
+  rejected:
+    storageType: local
+    storageDir: ../oai-bulk-files/rejected
+
+
+batchLoadSampleMode: false
+maxParallelHarvests: 3
+maxParallelDownloads: 20
+maxConsecutiveDownloadFailures: 1000
+downloadQueueFillDelayMs: 200
+
+authEnabled: false

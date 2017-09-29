@@ -52,4 +52,8 @@ public class Stylesheet {
     public Boolean getIsLatest() {
         return isLatest;
     }
+
+    public void setLatest(Boolean latest) {
+        isLatest = latest;
+    }
 }

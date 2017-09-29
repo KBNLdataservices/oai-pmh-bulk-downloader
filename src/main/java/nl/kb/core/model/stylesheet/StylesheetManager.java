@@ -31,4 +31,13 @@ public class StylesheetManager {
 
         return stylesheetDao.fetchByName(name);
     }
+
+    public Stylesheet update(String name, InputStream data) throws IOException {
+        final Stylesheet lastVersion = stylesheetDao.fetchByName(name);
+        stylesheetDao.createVersion(lastVersion);
+
+        stylesheetDao.update(lastVersion.getId(), IOUtils.toString(data, Charset.defaultCharset()));
+
+        return stylesheetDao.fetchByName(name);
+    }
 }

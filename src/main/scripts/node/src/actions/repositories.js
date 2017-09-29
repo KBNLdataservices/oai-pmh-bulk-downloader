@@ -60,7 +60,8 @@ const validateNewRepository = (repository) => (dispatch) =>
         body: JSON.stringify({
             set: repository.set,
             url: repository.url,
-            metadataPrefix: repository.metadataPrefix
+            metadataPrefix: repository.metadataPrefix,
+            stylesheetId: repository.stylesheetId
         })
     }, (err, resp, body) => {
         if (resp.statusCode > 299) {
@@ -70,7 +71,8 @@ const validateNewRepository = (repository) => (dispatch) =>
                 data: {
                     urlIsValidOAI: false,
                     setExists: undefined,
-                    metadataFormatSupported: undefined
+                    metadataFormatSupported: undefined,
+                    stylesheetIsPresent: undefined
                 }
             })
         } else {

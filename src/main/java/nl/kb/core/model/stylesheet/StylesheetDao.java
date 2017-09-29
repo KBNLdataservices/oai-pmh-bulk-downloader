@@ -27,4 +27,7 @@ public interface StylesheetDao {
 
     @SqlUpdate("UPDATE stylesheets SET xslt = :xslt, created = CURRENT_TIMESTAMP() WHERE id = :id")
     void update(@Bind("id") Integer id, @Bind("xslt") String xslt);
+
+    @SqlQuery("SELECT * FROM stylesheets WHERE id = :id")
+    Stylesheet fetchById(@Bind("id") Integer id);
 }

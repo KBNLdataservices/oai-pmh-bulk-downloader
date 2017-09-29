@@ -22,6 +22,8 @@ public class Repository {
     @JsonIgnore
     private LocalDate lastHarvest;
 
+    private Integer stylesheetId;
+
     public Repository() {
 
     }
@@ -36,6 +38,7 @@ public class Repository {
         this.schedule = repositoryBuilder.schedule;
         this.id = repositoryBuilder.id;
         this.lastHarvest = repositoryBuilder.lastHarvest;
+        this.stylesheetId = repositoryBuilder.stylesheetId;
     }
 
 
@@ -119,6 +122,11 @@ public class Repository {
         return lastHarvest;
     }
 
+    public Integer getStylesheetId() {
+        return stylesheetId;
+    }
+
+
     public static class RepositoryBuilder {
         private String url;
         private String name;
@@ -129,6 +137,7 @@ public class Repository {
         private HarvestSchedule schedule;
         private Integer id;
         private LocalDate lastHarvest;
+        private Integer stylesheetId;
 
         public RepositoryBuilder setUrl(String url) {
             this.url = url;
@@ -172,6 +181,11 @@ public class Repository {
 
         public RepositoryBuilder setLastHarvest(LocalDate lastHarvest) {
             this.lastHarvest = lastHarvest;
+            return this;
+        }
+
+        public RepositoryBuilder setStysheetId(Integer stylesheetId) {
+            this.stylesheetId = stylesheetId;
             return this;
         }
 

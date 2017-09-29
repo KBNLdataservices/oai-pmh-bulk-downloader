@@ -7,6 +7,7 @@ export default (state, routed) => ({
             set: "",
             metadataPrefix: "",
             dateStamp: null,
+            stylesheetId: undefined,
             schedule: "DAILY"
     }
     : state.repositories.underEdit || {

@@ -10,6 +10,7 @@ CREATE TABLE repositories (
   schedule int(11) NOT NULL,
   enabled int(3) DEFAULT 0 NOT NULL,
   lastHarvest DATETIME DEFAULT NULL,
+  stylesheet_id int(11) NOT NULL,
   PRIMARY KEY (id)
 );
 

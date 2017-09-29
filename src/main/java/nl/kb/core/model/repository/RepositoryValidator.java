@@ -1,6 +1,8 @@
 package nl.kb.core.model.repository;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import nl.kb.core.model.stylesheet.Stylesheet;
+import nl.kb.core.model.stylesheet.StylesheetDao;
 import nl.kb.http.HttpFetcher;
 import nl.kb.http.HttpResponseException;
 import nl.kb.http.HttpResponseHandler;
@@ -15,17 +17,21 @@ import java.net.URL;
 public class RepositoryValidator {
     private final HttpFetcher httpFetcher;
     private final ResponseHandlerFactory responseHandlerFactory;
+    private final StylesheetDao stylesheetDao;
 
     public class ValidationResult {
         @JsonProperty
         Boolean setExists = false;
         @JsonProperty
         Boolean metadataFormatSupported = false;
+        @JsonProperty
+        Boolean stylesheetIsPresent = false;
     }
 
-    public RepositoryValidator(HttpFetcher httpFetcher, ResponseHandlerFactory responseHandlerFactory) {
+    public RepositoryValidator(HttpFetcher httpFetcher, ResponseHandlerFactory responseHandlerFactory, StylesheetDao stylesheetDao) {
         this.httpFetcher = httpFetcher;
         this.responseHandlerFactory = responseHandlerFactory;
+        this.stylesheetDao = stylesheetDao;
     }
 
     public ValidationResult validate(Repository repositoryConfig) throws IOException, SAXException, HttpResponseException {
@@ -45,6 +51,12 @@ public class RepositoryValidator {
         final HttpResponseHandler listMdHandler = responseHandlerFactory.getSaxParsingHandler(listMetadataFormatsXmlHandler);
         httpFetcher.execute(listMdUrl, listMdHandler);
         listMdHandler.throwAnyException();
+
+        final Stylesheet stylesheet = stylesheetDao.fetchById(repositoryConfig.getStylesheetId());
+
+        if (stylesheet != null) {
+            validationResult.stylesheetIsPresent = true;
+        }
 
         return validationResult;
     }

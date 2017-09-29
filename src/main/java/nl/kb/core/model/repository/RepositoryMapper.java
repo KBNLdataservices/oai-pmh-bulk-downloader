@@ -23,6 +23,7 @@ public class RepositoryMapper implements ResultSetMapper<Repository> {
                 .setEnabled(resultSet.getBoolean("enabled"))
                 .setSchedule(HarvestSchedule.forCode(resultSet.getInt("schedule")))
                 .setId(resultSet.getInt("id"))
+                .setStysheetId(resultSet.getInt("stylesheet_id"))
                 .setLastHarvest(lastHarvest == null ? null : lastHarvest.toLocalDate())
                 .createRepository();
     }

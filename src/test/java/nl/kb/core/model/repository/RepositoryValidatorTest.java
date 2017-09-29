@@ -1,6 +1,7 @@
 package nl.kb.core.model.repository;
 
 
+import nl.kb.core.model.stylesheet.StylesheetDao;
 import nl.kb.http.HttpFetcher;
 import nl.kb.http.HttpResponseException;
 import nl.kb.http.HttpResponseHandler;
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class RepositoryValidatorTest {
 
@@ -51,7 +53,7 @@ public class RepositoryValidatorTest {
     @Test
     public void validateShouldSucceedWhetherRepositoryConfigIsSupportedByEndpoint() throws Exception {
         final HttpFetcher mockHttpFetcher = getMockHttpFetcher(listSetsXml, mdFormatsXml);
-        final RepositoryValidator instance = new RepositoryValidator(mockHttpFetcher, new ResponseHandlerFactory());
+        final RepositoryValidator instance = new RepositoryValidator(mockHttpFetcher, new ResponseHandlerFactory(), mock(StylesheetDao.class));
         final Repository validConfig = new Repository.RepositoryBuilder().setUrl("http://example.com").setName("name").setMetadataPrefix("nl_didl_norm").setSet("uvt:withfulltext:yes").setDateStamp(null).setEnabled(true).setSchedule(HarvestSchedule.DAILY).createRepository();
 
         final RepositoryValidator.ValidationResult validationResult = instance.validate(validConfig);
@@ -63,7 +65,7 @@ public class RepositoryValidatorTest {
     @Test
     public void validateShouldFailWhetherRepositoryConfigIsSupportedByEndpoint() throws Exception {
         final HttpFetcher mockHttpFetcher = getMockHttpFetcher(listSetsXml, mdFormatsXml);
-        final RepositoryValidator instance = new RepositoryValidator(mockHttpFetcher, new ResponseHandlerFactory());
+        final RepositoryValidator instance = new RepositoryValidator(mockHttpFetcher, new ResponseHandlerFactory(), mock(StylesheetDao.class));
         final Repository validConfig = new Repository.RepositoryBuilder().setUrl("http://example.com").setName("name").setMetadataPrefix("unsupported_Md").setSet("nonexistent_set").setDateStamp(null).setEnabled(true).setSchedule(HarvestSchedule.DAILY).createRepository();
 
         final RepositoryValidator.ValidationResult validationResult = instance.validate(validConfig);
@@ -75,7 +77,7 @@ public class RepositoryValidatorTest {
     @Test(expected = SAXException.class)
     public void validateShouldThrowWhenXmlParsingFails() throws IOException, SAXException, HttpResponseException {
         final HttpFetcher mockHttpFetcher = getMockHttpFetcher(corruptXml, mdFormatsXml);
-        final RepositoryValidator instance = new RepositoryValidator(mockHttpFetcher, new ResponseHandlerFactory());
+        final RepositoryValidator instance = new RepositoryValidator(mockHttpFetcher, new ResponseHandlerFactory(), mock(StylesheetDao.class));
         final Repository validConfig = new Repository.RepositoryBuilder().setUrl("http://example.com").setName("name").setMetadataPrefix("nl_didl_norm").setSet("uvt:withfulltext:yes").setDateStamp(null).setEnabled(true).setSchedule(HarvestSchedule.DAILY).createRepository();
 
         instance.validate(validConfig);
@@ -85,7 +87,7 @@ public class RepositoryValidatorTest {
     public void validateShouldThrowWhenHttpRequestFails() throws IOException, SAXException, HttpResponseException {
         final HttpFetcher failingFetcher = (url, responseHandler) -> responseHandler.onRequestError(new Exception("fails"));
         final Repository validConfig = new Repository.RepositoryBuilder().setUrl("http://example.com").setName("name").setMetadataPrefix("nl_didl_norm").setSet("uvt:withfulltext:yes").setDateStamp(null).setEnabled(true).setSchedule(HarvestSchedule.DAILY).createRepository();
-        final RepositoryValidator instance = new RepositoryValidator(failingFetcher, new ResponseHandlerFactory());
+        final RepositoryValidator instance = new RepositoryValidator(failingFetcher, new ResponseHandlerFactory(), mock(StylesheetDao.class));
 
         instance.validate(validConfig);
     }

@@ -205,7 +205,8 @@ public class App extends Application<Config> {
         );
 
         // Validator for OAI/PMH settings of a repository
-        final RepositoryValidator repositoryValidator = new RepositoryValidator(httpFetcherForIdentifierHarvest, responseHandlerFactory);
+        final RepositoryValidator repositoryValidator = new RepositoryValidator(
+                httpFetcherForIdentifierHarvest, responseHandlerFactory, stylesheetDao);
 
         // Fix potential data problems caused by hard termination of application
         try {

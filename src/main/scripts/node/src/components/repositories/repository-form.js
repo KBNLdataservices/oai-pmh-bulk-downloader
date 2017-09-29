@@ -48,7 +48,7 @@ class RepositoryForm extends React.Component {
 
         const { onDeleteRepository, onValidateNewRepository, validationResultsUnderEdit, onSaveRepository } = this.props;
 
-        const {urlIsValidOAI, setExists, metadataFormatSupported } = validationResultsUnderEdit;
+        const {urlIsValidOAI, setExists, metadataFormatSupported, stylesheetIsPresent } = validationResultsUnderEdit;
 
         if (!repository) { return null; }
 
@@ -59,7 +59,8 @@ class RepositoryForm extends React.Component {
             !changed &&
             urlIsValidOAI &&
             setExists &&
-            metadataFormatSupported;
+            metadataFormatSupported &&
+            stylesheetIsPresent;
 
         const deleteButton = repository.id ? (
             <ButtonWithModalWarning
@@ -96,6 +97,28 @@ class RepositoryForm extends React.Component {
                                       messageFail="Metadata format is not supported by this repository"
                     />
                 </TextField>
+                <div className="form-group row">
+                    <label className="col-md-4 col-sm-32 col-xs-32">
+                        Stylesheet
+                    </label>
+                    <span className="col-md-28">
+                      <div className="input-group">
+                        <select value={repository.stylesheetId}
+                                onChange={this.onChange.bind(this, "stylesheetId")}
+                                className="form-control">
+                            <option value="">- Selecteer stylesheet -</option>
+                            <option value="todo">todo</option>
+                        </select>
+                        <span className="input-group-addon">
+                          <ValidationMarker validates={stylesheetIsPresent}
+                                            messageOk="Stylesheet is present"
+                                            messageFail="Stylesheet is not present"
+                          />
+                        </span>
+                      </div>
+                    </span>
+                </div>
+
                 <DatestampField label="Datestamp" value={repository.dateStamp} onChange={this.onChange.bind(this, "dateStamp")} />
                 <div className="form-group row">
                     <label className="col-md-4 col-sm-32 col-xs-32">

@@ -23,7 +23,11 @@ const connectSocket = () => {
             case "harvester-runstate":
                 store.dispatch({type: ActionTypes.RECEIVE_HARVESTER_RUNSTATE, data: data});
                 break;
+            case "stylesheet-update":
+                store.dispatch({type: ActionTypes.RECEIVE_STYLESHEETS, data: data});
+                break;
             default:
+                console.log(`type ${type} not implemented: `, data);
                 break;
         }
     };

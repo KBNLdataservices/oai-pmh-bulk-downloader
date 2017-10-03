@@ -8,7 +8,8 @@ class EditRepository extends React.Component {
             nextProps.underEdit.set !== this.props.underEdit.set ||
             nextProps.underEdit.metadataPrefix !== this.props.underEdit.metadataPrefix ||
             nextProps.underEdit.dateStamp !== this.props.underEdit.dateStamp ||
-            nextProps.validationResultsUnderEdit !== this.props.validationResultsUnderEdit
+            nextProps.validationResultsUnderEdit !== this.props.validationResultsUnderEdit ||
+            nextProps.stylesheetId !== this.props.stylesheetId
     }
 
     render() {
@@ -16,12 +17,14 @@ class EditRepository extends React.Component {
             onDeleteRepository,
             onValidateNewRepository,
             validationResultsUnderEdit,
-            onSaveRepository
+            onSaveRepository,
+            stylesheets
         } = this.props;
 
 
         return this.props.underEdit ? (
             <RepositoryForm
+                stylesheets={stylesheets}
                 onValidateNewRepository={onValidateNewRepository}
                 onSaveRepository={onSaveRepository}
                 onDeleteRepository={onDeleteRepository}

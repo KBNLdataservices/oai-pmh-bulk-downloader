@@ -8,14 +8,16 @@ class NewRepository extends React.Component {
             nextProps.underEdit.set !== this.props.underEdit.set ||
             nextProps.underEdit.metadataPrefix !== this.props.underEdit.metadataPrefix ||
             nextProps.underEdit.dateStamp !== this.props.underEdit.dateStamp ||
-            nextProps.validationResultsUnderEdit !== this.props.validationResultsUnderEdit
+            nextProps.validationResultsUnderEdit !== this.props.validationResultsUnderEdit ||
+            nextProps.stylesheetId !== this.props.stylesheetId
     }
 
     render() {
-        const { onValidateNewRepository, validationResultsUnderEdit, onSaveRepository } = this.props;
+        const { onValidateNewRepository, validationResultsUnderEdit, onSaveRepository, stylesheets } = this.props;
 
         return (
             <RepositoryForm
+                stylesheets={stylesheets}
                 onValidateNewRepository={onValidateNewRepository}
                 onSaveRepository={onSaveRepository}
                 validationResultsUnderEdit={validationResultsUnderEdit}

@@ -4,9 +4,12 @@ import {fetchErrorStatus, fetchRecordStatus, fetchStatusCodes } from "./record-s
 import {fetchCredentials} from "./credentials"
 import {fetchHarvesterStatus} from "./harvesters";
 import {fetchOaiRecordFetcherStatus} from "./oai-record-fetcher";
+import {fetchStylesheets} from "./stylesheets";
 
 // Perform xhr requests for initial page render
 const fetchInitialData = (onInitialize) => {
+  // Fetch the list of available stylesheets
+  store.dispatch(fetchStylesheets(() =>
     // Fetch the list of repositories
     store.dispatch(fetchRepositories(() =>
         // Then fetch the current run state of any harvest definition
@@ -23,8 +26,9 @@ const fetchInitialData = (onInitialize) => {
                 ))
             ))
         ))
-    ));
-    store.dispatch(fetchCredentials());
+    ))
+  ));
+  store.dispatch(fetchCredentials());
 };
 
 

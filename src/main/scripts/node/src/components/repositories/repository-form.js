@@ -46,7 +46,7 @@ class RepositoryForm extends React.Component {
 
         const { repository, changed } = this.state;
 
-        const { onDeleteRepository, onValidateNewRepository, validationResultsUnderEdit, onSaveRepository } = this.props;
+        const { onDeleteRepository, onValidateNewRepository, validationResultsUnderEdit, onSaveRepository, stylesheets } = this.props;
 
         const {urlIsValidOAI, setExists, metadataFormatSupported, stylesheetIsPresent } = validationResultsUnderEdit;
 
@@ -107,7 +107,7 @@ class RepositoryForm extends React.Component {
                                 onChange={this.onChange.bind(this, "stylesheetId")}
                                 className="form-control">
                             <option value="">- Selecteer stylesheet -</option>
-                            <option value="todo">todo</option>
+                            {stylesheets.filter(s => s.isLatest).map(s => (<option key={s.id} value={s.id}>{s.name}</option>))}
                         </select>
                         <span className="input-group-addon">
                           <ValidationMarker validates={stylesheetIsPresent}

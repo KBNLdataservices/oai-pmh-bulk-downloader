@@ -2,6 +2,8 @@ package nl.kb.core.endpoints;
 
 import nl.kb.core.model.stylesheet.Stylesheet;
 import nl.kb.core.model.stylesheet.StylesheetManager;
+import nl.kb.core.websocket.SocketNotifier;
+import nl.kb.core.websocket.socketupdate.StylesheetUpdate;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -20,9 +22,11 @@ import java.io.InputStream;
 @Path("/stylesheets")
 public class StylesheetEndpoint {
     private final StylesheetManager stylesheetManager;
+    private final SocketNotifier socketNotifier;
 
-    public StylesheetEndpoint(StylesheetManager stylesheetManager) {
+    public StylesheetEndpoint(StylesheetManager stylesheetManager, SocketNotifier socketNotifier) {
         this.stylesheetManager = stylesheetManager;
+        this.socketNotifier = socketNotifier;
     }
 
     @GET
@@ -51,6 +55,7 @@ public class StylesheetEndpoint {
 
         try {
             final Stylesheet stylesheet = stylesheetManager.create(name, data);
+            socketNotifier.notifyUpdate(new StylesheetUpdate(stylesheetManager.list()));
             return Response.ok(stylesheet).build();
         } catch (IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -79,6 +84,7 @@ public class StylesheetEndpoint {
 
         try {
             final Stylesheet stylesheet = stylesheetManager.update(name, data);
+            socketNotifier.notifyUpdate(new StylesheetUpdate(stylesheetManager.list()));
             return Response.ok(stylesheet).build();
 
         } catch (IOException e) {

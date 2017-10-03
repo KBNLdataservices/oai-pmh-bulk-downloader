@@ -16,6 +16,6 @@ public class XsltTransformerFactory {
         for (InputStream xslt : xslts) {
             sources.add(new StreamSource(xslt));
         }
-        return PipedXsltTransformer.newInstance((StreamSource[]) sources.toArray());
+        return PipedXsltTransformer.newInstance(sources.stream().toArray(StreamSource[]::new));
     }
 }

@@ -185,6 +185,7 @@ public class App extends Application<Config> {
                 .setRepositoryDao(repositoryDao)
                 .setRecordDao(recordDao)
                 .setErrorReportDao(errorReportDao)
+                .setStylesheetDao(stylesheetDao)
                 .setObjectHarvesterOperations(objectHarvesterOperations)
                 .setRecordReporter(recordReporter)
                 .setErrorReporter(errorReporter)
@@ -238,7 +239,7 @@ public class App extends Application<Config> {
             new ExcelReportBuilder()));
 
         // Stylesheet management
-        register(environment, new StylesheetEndpoint(new StylesheetManager(stylesheetDao)));
+        register(environment, new StylesheetEndpoint(new StylesheetManager(stylesheetDao), socketNotifier));
 
         // HTML + javascript app
         register(environment, new RootEndpoint(config.getHostName()));

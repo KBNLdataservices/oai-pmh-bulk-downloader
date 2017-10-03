@@ -1,5 +1,6 @@
 export default (state, routed) => ({
 
+    stylesheets: state.stylesheets.list,
     underEdit: typeof routed.params.repositoryId  === 'undefined'
     ? state.repositories.underEdit || {
             name: "",

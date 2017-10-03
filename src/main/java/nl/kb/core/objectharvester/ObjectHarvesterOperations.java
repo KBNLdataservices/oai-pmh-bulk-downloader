@@ -16,7 +16,8 @@ import nl.kb.manifest.ManifestXmlHandler;
 import nl.kb.manifest.ObjectResource;
 import nl.kb.stream.ByteCountOutputStream;
 import nl.kb.stream.ChecksumOutputStream;
-import nl.kb.xslt.XsltTransformer;
+import nl.kb.xslt.PipedXsltTransformer;
+import nl.kb.xslt.XsltTransformerFactory;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,7 @@ public class ObjectHarvesterOperations {
     private final FileStorage doneStorage;
     private final HttpFetcher httpFetcher;
     private final ResponseHandlerFactory responseHandlerFactory;
-    private final XsltTransformer xsltTransformer;
+    private final XsltTransformerFactory xsltTransformerFactory;
     private final ObjectHarvesterResourceOperations resourceOperations;
     private final ManifestFinalizer manifestFinalizer;
 
@@ -72,7 +73,7 @@ public class ObjectHarvesterOperations {
                                      FileStorage doneStorage,
                                      HttpFetcher httpFetcher,
                                      ResponseHandlerFactory responseHandlerFactory,
-                                     XsltTransformer xsltTransformer,
+                                     XsltTransformerFactory xsltTransformerFactory,
                                      ObjectHarvesterResourceOperations resourceOperations,
                                      ManifestFinalizer manifestFinalizer) {
 
@@ -81,7 +82,7 @@ public class ObjectHarvesterOperations {
         this.doneStorage = doneStorage;
         this.httpFetcher = httpFetcher;
         this.responseHandlerFactory = responseHandlerFactory;
-        this.xsltTransformer = xsltTransformer;
+        this.xsltTransformerFactory = xsltTransformerFactory;
         this.resourceOperations = resourceOperations;
         this.manifestFinalizer = manifestFinalizer;
     }
@@ -148,12 +149,15 @@ public class ObjectHarvesterOperations {
         }
     }
 
-    boolean generateManifest(FileStorageHandle handle, Consumer<ErrorReport> onError) {
+    boolean generateManifest(FileStorageHandle handle, InputStream stylesheet, Consumer<ErrorReport> onError) {
         try {
             final InputStream metadata = handle.getFile(METADATA_XML);
             final OutputStream out = handle.getOutputStream(MANIFEST_INITIAL_XML);
             final Writer outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8.name());
 
+            final PipedXsltTransformer xsltTransformer = xsltTransformerFactory.newPipedXsltTransformer(
+                    PipedXsltTransformer.class.getResourceAsStream("/xslt/strip_oai_wrapper.xsl"),
+                    stylesheet);
             xsltTransformer.transform(metadata, new StreamResult(outputStreamWriter));
 
             return true;

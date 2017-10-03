@@ -13,7 +13,8 @@ import nl.kb.http.HttpResponseHandler;
 import nl.kb.http.responsehandlers.ResponseHandlerFactory;
 import nl.kb.manifest.ManifestFinalizer;
 import nl.kb.manifest.ObjectResource;
-import nl.kb.xslt.XsltTransformer;
+import nl.kb.xslt.PipedXsltTransformer;
+import nl.kb.xslt.XsltTransformerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -71,7 +72,7 @@ public class ObjectHarvesterOperationsTest {
     public void getFileStorageHandleShouldReturnAHandleIfAvailable() throws IOException {
         final FileStorageHandle handle = mock(FileStorageHandle.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(processingStorage, rejectedStorage, doneStorage, mock(HttpFetcher.class),
-                mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(ResponseHandlerFactory.class), mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
         final Record oaiRecord = mock(Record.class);
         when(processingStorage.create(anyString())).thenReturn(handle);
@@ -88,7 +89,8 @@ public class ObjectHarvesterOperationsTest {
     public void getFileStorageHandleShouldEmptyOptionalWhenIOExceptionIsCaught() throws IOException {
         final FileStorage processingStorage = mock(FileStorage.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
-                processingStorage, rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                processingStorage, rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
         final Record oaiRecord = mock(Record.class);
         when(oaiRecord.getIpName()).thenReturn("123");
@@ -109,7 +111,7 @@ public class ObjectHarvesterOperationsTest {
         final HttpResponseHandler responseHandler = mock(HttpResponseHandler.class);
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class), rejectedStorage, doneStorage, httpFetcher,
-                responseHandlerFactory, mock(XsltTransformer.class),
+                responseHandlerFactory, mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
 
         when(oaiRecord.getOaiIdentifier()).thenReturn("identifier");
@@ -139,7 +141,8 @@ public class ObjectHarvesterOperationsTest {
         final Repository repository = mock(Repository.class);
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
-                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), responseHandlerFactory, mock(XsltTransformer.class),
+                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), responseHandlerFactory,
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
 
         when(responseHandlerFactory.getStreamCopyingResponseHandler(any(), any(), any()))
@@ -171,7 +174,8 @@ public class ObjectHarvesterOperationsTest {
         final Repository repository = mock(Repository.class);
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
-                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), responseHandlerFactory, mock(XsltTransformer.class),
+                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), responseHandlerFactory,
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
 
         when(responseHandlerFactory.getStreamCopyingResponseHandler(any(), any(), any()))
@@ -194,7 +198,7 @@ public class ObjectHarvesterOperationsTest {
         final Record oaiRecord = mock(Record.class);
         final Repository repository = mock(Repository.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class),
-                responseHandlerFactory, mock(XsltTransformer.class),
+                responseHandlerFactory, mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
 
@@ -222,7 +226,7 @@ public class ObjectHarvesterOperationsTest {
         final Repository repository = mock(Repository.class);
         final FileStorageHandle storageHandle = mock(FileStorageHandle.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class),
-                responseHandlerFactory, mock(XsltTransformer.class), mock(ObjectHarvesterResourceOperations.class),
+                responseHandlerFactory, mock(XsltTransformerFactory.class), mock(ObjectHarvesterResourceOperations.class),
                 mock(ManifestFinalizer.class));
 
         when(responseHandler.getExceptions()).thenReturn(Lists.newArrayList(mock(Exception.class)));
@@ -237,17 +241,20 @@ public class ObjectHarvesterOperationsTest {
     @Test
     public void generateManifestShouldTransformTheResponseTheXsltTransformer() throws IOException, TransformerException {
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
-        final XsltTransformer xsltTransformer = mock(XsltTransformer.class);
+        final PipedXsltTransformer xsltTransformer = mock(PipedXsltTransformer.class);
+        final XsltTransformerFactory xsltTransformerFactory = mock(XsltTransformerFactory.class);
         final InputStream in = mock(InputStream.class);
         final OutputStream out = mock(OutputStream.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class),
-                rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), xsltTransformer,
+                rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                xsltTransformerFactory,
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
 
         when(processingStorageHandle.getFile("metadata.xml")).thenReturn(in);
         when(processingStorageHandle.getOutputStream("manifest.initial.xml")).thenReturn(out);
+        when(xsltTransformerFactory.newPipedXsltTransformer(any(), any())).thenReturn(xsltTransformer);
 
-        final boolean result = instance.generateManifest(processingStorageHandle, (errorReport) -> {});
+        final boolean result = instance.generateManifest(processingStorageHandle, mock(InputStream.class), (errorReport) -> {});
 
         final InOrder inOrder = inOrder(processingStorageHandle, xsltTransformer);
         inOrder.verify(processingStorageHandle).getFile("metadata.xml");
@@ -265,17 +272,17 @@ public class ObjectHarvesterOperationsTest {
         final List<ErrorReport> reports = Lists.newArrayList();
         final Consumer<ErrorReport> onError = reports::add;
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
-        final XsltTransformer xsltTransformer = mock(XsltTransformer.class);
+        final XsltTransformerFactory xsltTransformerFactory = mock(XsltTransformerFactory.class);
         final InputStream in = mock(InputStream.class);
-        final OutputStream out = mock(OutputStream.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class),
-                rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), xsltTransformer,
-                mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
+                rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                xsltTransformerFactory, mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
+
 
         when(processingStorageHandle.getFile("metadata.xml")).thenReturn(in);
         when(processingStorageHandle.getOutputStream("manifest.initial.xml")).thenThrow(IOException.class);
 
-        final boolean result = instance.generateManifest(processingStorageHandle, onError);
+        final boolean result = instance.generateManifest(processingStorageHandle, mock(InputStream.class), onError);
 
         assertThat(result, is(false));
         assertThat(reports.get(0), hasProperty("exception", is(instanceOf(IOException.class))));
@@ -286,17 +293,20 @@ public class ObjectHarvesterOperationsTest {
         final List<ErrorReport> reports = Lists.newArrayList();
         final Consumer<ErrorReport> onError = reports::add;
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
-        final XsltTransformer xsltTransformer = mock(XsltTransformer.class);
+        final XsltTransformerFactory xsltTransformerFactory = mock(XsltTransformerFactory.class);
+        final PipedXsltTransformer xsltTransformer = mock(PipedXsltTransformer.class);
+        when(xsltTransformerFactory.newPipedXsltTransformer(any(), any())).thenReturn(xsltTransformer);
+
         final InputStream in = mock(InputStream.class);
         final OutputStream out = mock(OutputStream.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class),
-                rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), xsltTransformer,
-                mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
+                rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                xsltTransformerFactory, mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
 
         when(processingStorageHandle.getFile("metadata.xml")).thenReturn(in);
         when(processingStorageHandle.getOutputStream("manifest.initial.xml")).thenReturn(out);
         doThrow(TransformerException.class).when(xsltTransformer).transform(any(), any());
-        final boolean result = instance.generateManifest(processingStorageHandle, onError);
+        final boolean result = instance.generateManifest(processingStorageHandle, mock(InputStream.class), onError);
 
         assertThat(result, is(false));
         assertThat(reports.get(0), hasProperty("exception", is(instanceOf(TransformerException.class))));
@@ -306,7 +316,8 @@ public class ObjectHarvesterOperationsTest {
     @Test
     public void collectResourcesShouldReturnTheListOfObjectResourcesInXml() throws FileNotFoundException {
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
-                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
         final FileStorageHandle handle = mock(FileStorageHandle.class);
         when(handle.getFile("manifest.initial.xml")).thenReturn(ObjectHarvesterOperationsTest.class.getResourceAsStream("/oai/manifest.xml"));
@@ -327,7 +338,8 @@ public class ObjectHarvesterOperationsTest {
         final List<ErrorReport> errorReports = Lists.newArrayList();
         final InputStream badXml = new ByteArrayInputStream("<invalid></".getBytes(StandardCharsets.UTF_8));
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
-                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
         final FileStorageHandle handle = mock(FileStorageHandle.class);
         when(handle.getFile("manifest.initial.xml")).thenReturn(badXml);
@@ -343,7 +355,8 @@ public class ObjectHarvesterOperationsTest {
     public void collectResourcesShouldLogAnErrorWhenAnIOExceptionIsCaught() throws FileNotFoundException {
         final List<ErrorReport> errorReports = Lists.newArrayList();
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
-                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class), mock(ManifestFinalizer.class));
         final FileStorageHandle handle = mock(FileStorageHandle.class);
         when(handle.getFile("manifest.initial.xml")).thenThrow(IOException.class);
@@ -360,7 +373,7 @@ public class ObjectHarvesterOperationsTest {
     public void downloadResourcesShouldDownloadAllObjectResourcesAndReturnTrueUponSuccess() throws IOException, NoSuchAlgorithmException {
         final ObjectHarvesterResourceOperations resourceOperations = mock(ObjectHarvesterResourceOperations.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class),
-                mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(ResponseHandlerFactory.class), mock(XsltTransformerFactory.class),
                 resourceOperations,
                 mock(ManifestFinalizer.class));
         final ObjectResource objectResource1 = new ObjectResource();
@@ -382,7 +395,7 @@ public class ObjectHarvesterOperationsTest {
     public void downloadResourcesShouldReturnFalseUponAnyError() throws IOException, NoSuchAlgorithmException {
         final ObjectHarvesterResourceOperations resourceOperations = mock(ObjectHarvesterResourceOperations.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class),
-                mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(ResponseHandlerFactory.class), mock(XsltTransformerFactory.class),
                 resourceOperations,
                 mock(ManifestFinalizer.class));
         final ObjectResource objectResource1 = new ObjectResource();
@@ -404,7 +417,7 @@ public class ObjectHarvesterOperationsTest {
         final Consumer<ErrorReport> onError = reports::add;
         final ObjectHarvesterResourceOperations resourceOperations = mock(ObjectHarvesterResourceOperations.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class),
-                mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(ResponseHandlerFactory.class), mock(XsltTransformerFactory.class),
                 resourceOperations,
                 mock(ManifestFinalizer.class));
         final FileStorageHandle processingStorageHandle = mock(FileStorageHandle.class);
@@ -428,7 +441,7 @@ public class ObjectHarvesterOperationsTest {
         final ObjectHarvesterResourceOperations resourceOperations = mock(ObjectHarvesterResourceOperations.class);
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
                 mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class),
-                mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(ResponseHandlerFactory.class), mock(XsltTransformerFactory.class),
                 resourceOperations,
                 mock(ManifestFinalizer.class));
 
@@ -460,7 +473,7 @@ public class ObjectHarvesterOperationsTest {
 
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
                 mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
-                mock(XsltTransformer.class),
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class),
                 manifestFinalizer);
 
@@ -497,7 +510,7 @@ public class ObjectHarvesterOperationsTest {
         final List<ObjectResource> objectResources = Lists.newArrayList(new ObjectResource());
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
                 mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
-                mock(XsltTransformer.class),
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class),
                 manifestFinalizer);
 
@@ -526,7 +539,8 @@ public class ObjectHarvesterOperationsTest {
         final ObjectResource metadataResource = mock(ObjectResource.class);
         final List<ObjectResource> objectResources = Lists.newArrayList(new ObjectResource());
         final ObjectHarvesterOperations instance = new ObjectHarvesterOperations(
-                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class), mock(XsltTransformer.class),
+                mock(FileStorage.class), rejectedStorage, doneStorage, mock(HttpFetcher.class), mock(ResponseHandlerFactory.class),
+                mock(XsltTransformerFactory.class),
                 mock(ObjectHarvesterResourceOperations.class),
                 manifestFinalizer);
 

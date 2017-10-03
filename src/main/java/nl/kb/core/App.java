@@ -52,13 +52,12 @@ import nl.kb.http.HttpFetcher;
 import nl.kb.http.LenientHttpFetcher;
 import nl.kb.http.responsehandlers.ResponseHandlerFactory;
 import nl.kb.manifest.ManifestFinalizer;
-import nl.kb.xslt.PipedXsltTransformer;
+import nl.kb.xslt.XsltTransformerFactory;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
-import javax.xml.transform.stream.StreamSource;
 import java.util.Map;
 
 public class App extends Application<Config> {
@@ -147,12 +146,12 @@ public class App extends Application<Config> {
 
 
         // Xslt processors
-        final StreamSource stripOaiXslt = new StreamSource(PipedXsltTransformer.class.getResourceAsStream("/xslt/strip_oai_wrapper.xsl"));
+/*        final StreamSource stripOaiXslt = new StreamSource(PipedXsltTransformer.class.getResourceAsStream("/xslt/strip_oai_wrapper.xsl"));
 
         // TODO this needs to be moved!
         final StreamSource didlToManifestXslt = new StreamSource(PipedXsltTransformer.class.getResourceAsStream("/xslt/didl-to-manifest.xsl"));
 
-        final PipedXsltTransformer xsltTransformer = PipedXsltTransformer.newInstance(stripOaiXslt, didlToManifestXslt);
+        final PipedXsltTransformer xsltTransformer = PipedXsltTransformer.newInstance(stripOaiXslt, didlToManifestXslt);*/
 
         // Builder for new instances of identifier harvesters
         final IdentifierHarvester.Builder harvesterBuilder = new IdentifierHarvester.Builder(repositoryController,
@@ -174,7 +173,7 @@ public class App extends Application<Config> {
         // Organises the operations of downloading a full publication object
         final ObjectHarvesterOperations objectHarvesterOperations = new ObjectHarvesterOperations(
                 processingStorage, rejectedStorage, doneStorage,
-                httpFetcherForObjectHarvest, responseHandlerFactory, xsltTransformer,
+                httpFetcherForObjectHarvest, responseHandlerFactory, new XsltTransformerFactory(),
                 objectHarvesterResourceOperations, new ManifestFinalizer());
 
         // Handles expected failure flow (exceed maximum consecutive download failures

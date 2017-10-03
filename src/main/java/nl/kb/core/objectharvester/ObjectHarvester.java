@@ -12,6 +12,8 @@ import nl.kb.core.model.reporting.ErrorReporter;
 import nl.kb.core.model.repository.Repository;
 import nl.kb.core.model.repository.RepositoryDao;
 import nl.kb.core.model.statuscodes.ProcessStatus;
+import nl.kb.core.model.stylesheet.Stylesheet;
+import nl.kb.core.model.stylesheet.StylesheetDao;
 import nl.kb.core.websocket.SocketNotifier;
 import nl.kb.filestorage.FileStorageHandle;
 import nl.kb.manifest.ObjectResource;
@@ -45,6 +47,7 @@ public class ObjectHarvester {
     private final ErrorReporter errorReporter;
     private final SocketNotifier socketNotifier;
     private final Integer maxSequentialDownloadFailures;
+    private final StylesheetDao stylesheetDao;
     private ObjectHarvestErrorFlowHandler objectHarvestErrorFlowHandler;
 
 
@@ -59,6 +62,7 @@ public class ObjectHarvester {
         this.socketNotifier = builder.socketNotifier;
         this.maxSequentialDownloadFailures = builder.maxSequentialDownloadFailures;
         this.objectHarvestErrorFlowHandler = builder.objectHarvestErrorFlowHandler;
+        this.stylesheetDao = builder.stylesheetDao;
     }
 
     public List<Thread> harvestNextPublications(Integer maxParallelDownloads, AtomicInteger runningWorkers) {
@@ -71,10 +75,12 @@ public class ObjectHarvester {
             final Thread worker = new Thread(() -> {
                 final Stopwatch timer = Stopwatch.createStarted();
                 final Repository repositoryConfig = repositoryDao.findById(record.getRepositoryId());
+                final Stylesheet stylesheet = stylesheetDao.fetchById(repositoryConfig.getStylesheetId());
                 if (repositoryConfig != null) {
                     final ProcessStatus result = harvestPublication(
                             record,
                             repositoryConfig,
+                            stylesheet,
                             (ErrorReport errorReport) -> saveErrorReport(errorReport, record) // on error
                     );
                     finishRecord(record, result, timer.elapsed(TimeUnit.SECONDS));
@@ -92,7 +98,7 @@ public class ObjectHarvester {
         return workers;
     }
 
-    ProcessStatus harvestPublication(Record record, Repository repositoryConfig, Consumer<ErrorReport> onError) {
+    ProcessStatus harvestPublication(Record record, Repository repositoryConfig, Stylesheet stylesheet, Consumer<ErrorReport> onError) {
 
         final Optional<FileStorageHandle> processingStorageHandle = objectHarvesterOperations.getFileStorageHandle(
                 FileStorageGoal.PROCESSING, getSuperSetFromSetName(repositoryConfig), record, onError);
@@ -111,7 +117,7 @@ public class ObjectHarvester {
             return ProcessStatus.FAILED;
         }
 
-        if (!objectHarvesterOperations.generateManifest(handle, onError)) {
+        if (!objectHarvesterOperations.generateManifest(handle, stylesheet.getXsltStream(), onError)) {
             objectHarvesterOperations.moveToStorage(REJECTED, handle, getSuperSetFromSetName(repositoryConfig), record);
             return ProcessStatus.FAILED;
         }
@@ -222,6 +228,7 @@ public class ObjectHarvester {
         private SocketNotifier socketNotifier;
         private Integer maxSequentialDownloadFailures;
         private ObjectHarvestErrorFlowHandler objectHarvestErrorFlowHandler;
+        private StylesheetDao stylesheetDao;
 
         public Builder setRepositoryDao(RepositoryDao repositoryDao) {
             this.repositoryDao = repositoryDao;
@@ -232,6 +239,13 @@ public class ObjectHarvester {
             this.recordDao = recordDao;
             return this;
         }
+
+
+        public Builder setStylesheetDao(StylesheetDao stylesheetDao) {
+            this.stylesheetDao = stylesheetDao;
+            return this;
+        }
+
 
         public Builder setErrorReportDao(ErrorReportDao errorReportDao) {
             this.errorReportDao = errorReportDao;

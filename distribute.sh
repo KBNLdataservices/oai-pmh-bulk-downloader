@@ -11,4 +11,4 @@ git commit -m "Distributes version $version."
 
 git tag v$version
 
-git push origin master --follow-tags
+git push origin --tags

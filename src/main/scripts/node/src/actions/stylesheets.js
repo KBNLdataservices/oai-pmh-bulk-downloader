@@ -11,4 +11,24 @@ const fetchStylesheets = (next = () => {}) => (dispatch) => {
     );
 };
 
-export { fetchStylesheets }
+const uploadStylesheet = (files, stylesheetName = null) => (dispatch) => {
+  const data = new FormData();
+  data.append("file", files[0]);
+
+  const req = new XMLHttpRequest();
+
+  req.onload = () => {
+      if (req.status > 299) {
+        alert(`Fout bij upload: ${JSON.parse(req.response).message}`);
+      }
+  }
+
+  if (stylesheetName) {
+    req.open("PUT", `/stylesheets/${stylesheetName}`);
+  } else {
+    req.open("POST", `/stylesheets`);
+  }
+  req.send(data)
+}
+
+export { fetchStylesheets, uploadStylesheet }

@@ -17,7 +17,7 @@ import repositoriesConnector from "./connectors/repositories-connector";
 import editRepositoryConnector from "./connectors/edit-repository-connector";
 import repositoryStatusConnector from "./connectors/repository-status-connector";
 import recordStatusConnector from "./connectors/record-status-connector";
-
+import stylesheetsConnector from "./connectors/stylesheets-connector";
 
 // The root layout component
 import App from "./components/app";
@@ -28,6 +28,7 @@ import NewRepository from "./components/repositories/new";
 import EditRepository from "./components/repositories/edit";
 import RepositoryStatus from "./components/repositories/repository-status";
 import RecordStatus from "./components/record-status/record-status";
+import Stylesheets from "./components/stylesheets/stylesheets";
 
 
 // Forces a navigation to the url identified by key (see ./etc/urls)
@@ -48,6 +49,7 @@ export default (
                 <Route path={urls.editRepository()} components={connectComponent(editRepositoryConnector)(EditRepository)} />
                 <Route path={urls.repositoryStatus()} components={connectComponent(repositoryStatusConnector)(RepositoryStatus)}/>
                 <Route path={urls.record()} components={connectComponent(recordStatusConnector)(RecordStatus)} />
+                <Route path={urls.stylesheets()} components={connectComponent(stylesheetsConnector)(Stylesheets)} />
             </Route>
         </Router>
     </Provider>

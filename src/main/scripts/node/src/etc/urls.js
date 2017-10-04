@@ -19,6 +19,9 @@ const urls = {
         return ipName
             ? `/publicatie/${ipName}`
             : "/publicatie/:ipName"
+    },
+    stylesheets() {
+      return "/stylesheet-beheer";
     }
 };
 

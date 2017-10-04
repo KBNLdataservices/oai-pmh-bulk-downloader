@@ -7,8 +7,9 @@ mvn clean package
 cp target/oai-pmh-bulk-downloader-$version.jar ./dist/
 
 git add .
-git commit -m "Distributes version $version."
+git commit -am "Distributes version $version."
 
 git tag v$version
 
 git push origin --tags
+git push origin master

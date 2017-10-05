@@ -6,6 +6,8 @@ mvn clean package
 
 cp target/oai-pmh-bulk-downloader-$version.jar ./dist/
 
+cp target/oai-pmh-bulk-downloader-$version.jar ./dist/oai-pmh-bulk-downloader-latest.jar
+
 git add .
 git commit -am "Distributes version $version."
 

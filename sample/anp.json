@@ -1,0 +1,9 @@
+{
+  "url": "http://services.kb.nl/mdo/oai",
+  "name": "ANP",
+  "metadataPrefix": "didl",
+  "set": "anp",
+  "datestamp": null,
+  "enabled": true,
+  "schedule": 0
+}

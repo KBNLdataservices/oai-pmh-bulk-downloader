@@ -38,13 +38,13 @@ mailer:
 fileStorage:
   processing:
     storageType: local
-    storageDir: ../oai-bulk-files/processing
+    storageDir: ./output/processing
   done:
     storageType: local
-    storageDir: ../oai-bulk-files/in
+    storageDir: ./output/in
   rejected:
     storageType: local
-    storageDir: ../oai-bulk-files/rejected
+    storageDir: ./output/rejected
 
 
 batchLoadSampleMode: false

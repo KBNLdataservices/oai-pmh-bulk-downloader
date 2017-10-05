@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-wget https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/dist/oai-pmh-bulk-downloader-latest.jar
-wget https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/sample/example.yaml
-wget https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/sample/anp.xsl
-wget https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/sample/anp.json
+wget --no-cache https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/dist/oai-pmh-bulk-downloader-latest.jar
+wget --no-cache https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/sample/example.yaml
+wget --no-cache https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/sample/anp.xsl
+wget --no-cache https://raw.githubusercontent.com/KBNLresearch/oai-pmh-bulk-downloader/master/sample/anp.json
 
 
 mkdir -p output/in

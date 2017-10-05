@@ -3,7 +3,7 @@
   "name": "ANP",
   "metadataPrefix": "didl",
   "set": "anp",
-  "datestamp": null,
+  "dateStamp": null,
   "enabled": true,
   "schedule": 0
 }

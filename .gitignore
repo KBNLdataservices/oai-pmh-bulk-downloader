@@ -1,4 +1,5 @@
 .idea
+development.yaml
 *.iml
 target
 src/main/scripts/node/node_modules

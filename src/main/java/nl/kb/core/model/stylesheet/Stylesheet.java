@@ -36,6 +36,15 @@ public class Stylesheet {
         return xslt;
     }
 
+    @JsonIgnore
+    public byte[] getXsltBytes() {
+        try {
+            return IOUtils.toByteArray(xslt);
+        } catch (IOException e) {
+            return "".getBytes();
+        }
+    }
+
     public String getXslt() {
         try {
             return IOUtils.toString(xslt, Charset.defaultCharset());

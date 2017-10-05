@@ -145,14 +145,6 @@ public class App extends Application<Config> {
                 new IdentifierHarvestErrorFlowHandler(repositoryController, mailer);
 
 
-        // Xslt processors
-/*        final StreamSource stripOaiXslt = new StreamSource(PipedXsltTransformer.class.getResourceAsStream("/xslt/strip_oai_wrapper.xsl"));
-
-        // TODO this needs to be moved!
-        final StreamSource didlToManifestXslt = new StreamSource(PipedXsltTransformer.class.getResourceAsStream("/xslt/didl-to-manifest.xsl"));
-
-        final PipedXsltTransformer xsltTransformer = PipedXsltTransformer.newInstance(stripOaiXslt, didlToManifestXslt);*/
-
         // Builder for new instances of identifier harvesters
         final IdentifierHarvester.Builder harvesterBuilder = new IdentifierHarvester.Builder(repositoryController,
                 recordBatchLoader, httpFetcherForIdentifierHarvest, responseHandlerFactory, repositoryDao);

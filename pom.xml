@@ -98,6 +98,14 @@
             <version>5.1.39</version>
         </dependency>
 
+        <!-- h2 database for example run without dependencies -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.193</version>
+        </dependency>
+
+
         <!-- apache commons-io -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -125,14 +133,6 @@
 
         <!-- [TESTING] -->
         <!-- Mockito mocking framework -->
-        <!-- h2 database for dao unit tests and integration testing -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.193</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

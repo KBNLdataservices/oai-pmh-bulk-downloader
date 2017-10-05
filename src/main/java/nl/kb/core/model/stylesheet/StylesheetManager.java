@@ -4,7 +4,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.List;
 
 public class StylesheetManager {
@@ -25,9 +24,8 @@ public class StylesheetManager {
     }
 
     public Stylesheet create(String name, InputStream data) throws IOException {
-        final String xslt = IOUtils.toString(data, Charset.defaultCharset());
 
-        stylesheetDao.create(name, xslt);
+        stylesheetDao.create(name, IOUtils.toByteArray(data));
 
         return stylesheetDao.fetchByName(name);
     }
@@ -36,7 +34,7 @@ public class StylesheetManager {
         final Stylesheet lastVersion = stylesheetDao.fetchByName(name);
         stylesheetDao.createVersion(lastVersion);
 
-        stylesheetDao.update(lastVersion.getId(), IOUtils.toString(data, Charset.defaultCharset()));
+        stylesheetDao.update(lastVersion.getId(), IOUtils.toByteArray(data));
 
         return stylesheetDao.fetchByName(name);
     }

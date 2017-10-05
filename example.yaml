@@ -1,0 +1,56 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 18080
+      bindHost: localhost
+  adminConnectors:
+    - type: http
+      port: 18081
+  requestLog:
+    appenders:
+      - type: console
+
+logging:
+  appenders:
+    - type: console
+  level: INFO
+
+
+# Database settings.
+database:
+
+  # the name of your JDBC driver
+  driverClass: org.h2.Driver
+
+  # the username
+  user: daredev
+
+  # the password
+  password: daredev
+
+  url: jdbc:h2:mem:dareintegration
+
+hostName: localhost:18080
+
+mailer:
+  type: stubbed
+
+fileStorage:
+  processing:
+    storageType: local
+    storageDir: ../oai-bulk-files/processing
+  done:
+    storageType: local
+    storageDir: ../oai-bulk-files/in
+  rejected:
+    storageType: local
+    storageDir: ../oai-bulk-files/rejected
+
+
+batchLoadSampleMode: false
+maxParallelHarvests: 3
+maxParallelDownloads: 20
+maxConsecutiveDownloadFailures: 10
+downloadQueueFillDelayMs: 200
+
+authEnabled: false

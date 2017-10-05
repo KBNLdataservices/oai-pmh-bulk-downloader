@@ -15,10 +15,10 @@ public interface StylesheetDao {
     List<Stylesheet> list();
 
     @SqlUpdate("INSERT INTO stylesheets (name, xslt) VALUES (:name, :xslt)")
-    void create(@Bind("name") String name, @Bind("xslt") String xslt);
+    void create(@Bind("name") String name, @Bind("xslt") byte[] xslt);
 
     @SqlUpdate("INSERT INTO stylesheets (name, xslt, created, is_latest)" +
-            " VALUES (:s.name, :s.xslt, :s.created, 0)")
+            " VALUES (:s.name, :s.xsltBytes, :s.created, 0)")
     void createVersion(@BindBean("s") Stylesheet lastVersion);
 
     @SqlQuery("SELECT * FROM stylesheets WHERE name = :name AND is_latest = 1")
@@ -26,7 +26,7 @@ public interface StylesheetDao {
 
 
     @SqlUpdate("UPDATE stylesheets SET xslt = :xslt, created = CURRENT_TIMESTAMP() WHERE id = :id")
-    void update(@Bind("id") Integer id, @Bind("xslt") String xslt);
+    void update(@Bind("id") Integer id, @Bind("xslt") byte[] xslt);
 
     @SqlQuery("SELECT * FROM stylesheets WHERE id = :id")
     Stylesheet fetchById(@Bind("id") Integer id);

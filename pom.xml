@@ -6,7 +6,7 @@
 
     <groupId>nl.kb</groupId>
     <artifactId>oai-pmh-bulk-downloader</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
 
     <prerequisites>
         <maven>3.0</maven>

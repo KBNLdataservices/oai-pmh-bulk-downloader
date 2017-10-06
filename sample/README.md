@@ -1,8 +1,8 @@
 # Sample installation and basic use
 
 ## Table of Contents
-  * [Prerequisites](#prerequisites)
-  * [The install command](#the-install-command)
+- [Prerequisites](#prerequisites)
+- [The install command](#the-install-command)
 - [What is installed](#what-is-installed)
 - [Overview of the preconfigured Dashboard](#overview-of-the-preconfigured-dashboard)
   * [The status overview](#the-status-overview)
@@ -22,13 +22,13 @@
   * [How can I mess up the harvester to see what happens?](#how-can-i-mess-up-the-harvester-to-see-what-happens)
 - [Cleaning up](#cleaning-up)
 
-### Prerequisites
+## Prerequisites
 
 For the sample installer to work the following two depencies must be met:
 - A version Java 8 needs to be [installed and configured](http://tipsonubuntu.com/2016/07/31/install-oracle-java-8-9-ubuntu-16-04-linux-mint-18/)
 - The ```curl``` tool must be present: ```sudo apt-get install curl``` 
 
-### The install command
+## The install command
 
 ```bash
   mkdir oai-pmh-bulk-downloader

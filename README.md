@@ -59,3 +59,19 @@ you are sure you know what you are doing.
 
 ## Contributing
 
+This tool does a lot of stuff and if you followed the tutorial you can see that it is quite
+laborious to set up. However, it is intended for reuse and I have made every effort to
+make it suitable for that purpose.
+
+You can contribute via forking and issuing pull requests, but make sure the regressions succeed
+by running ```mvn clean test```
+
+### Wishlist
+
+* Ways to integrate this tool neatly in other workflows (as per issue #3)
+* Testing support for as many OAI/PMH servers as possible (implementations of OAI/PMH servers vary)
+  - any added sample stylesheets and configurations are welcome!
+* Review of record version management:
+  - currently each update is treated as a new record and deletions are ignored
+  - maybe instructions to a receiving endpoint (see #3) in a workflow can be added to
+  delegate handling of OAI/PMH statuses (updated/deleted)

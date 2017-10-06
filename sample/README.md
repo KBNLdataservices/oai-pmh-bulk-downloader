@@ -1,5 +1,27 @@
 # Sample installation and basic use
 
+## Table of Contents
+  * [Prerequisites](#prerequisites)
+  * [The install command](#the-install-command)
+- [What is installed](#what-is-installed)
+- [Overview of the preconfigured Dashboard](#overview-of-the-preconfigured-dashboard)
+  * [The status overview](#the-status-overview)
+- [Operating the harvester using the dashboard](#operating-the-harvester-using-the-dashboard)
+- [Exploring the output](#exploring-the-output)
+  * [manifest.initial.xml](#manifestinitialxml)
+  * [procesdata.xml](#procesdataxml)
+  * [procesdata.xml.sha512.checksum](#procesdataxmlsha512checksum)
+  * [metadata.xml](#metadataxml)
+  * [resources](#resources)
+- [What did the oai-pmh-bulk-downloaded actually do?](#what-did-the-oai-pmh-bulk-downloaded-actually-do)
+- [How did the install script actually configure the ANP repository?](#how-did-the-install-script-actually-configure-the-anp-repository)
+  * [Uploading a stylesheet using the dashboard](#uploading-a-stylesheet-using-the-dashboard)
+  * [Configuring a repository using the dashboard](#configuring-a-repository-using-the-dashboard)
+    + [What is validated?](#what-is-validated)
+- [What will happen when harvesting fails?](#what-will-happen-when-harvesting-fails)
+  * [How can I mess up the harvester to see what happens?](#how-can-i-mess-up-the-harvester-to-see-what-happens)
+- [Cleaning up](#cleaning-up)
+
 ### Prerequisites
 
 For the sample installer to work the following two depencies must be met:
